@@ -75,3 +75,13 @@ form button:active {
   justify-content: center;
   border-radius: 10px;
 }
+
+.resultado-correto {
+  background-color: lightgreen;
+  padding: 10px 30px;
+}
+
+.resultado-errado {
+  background-color: lightsalmon;
+  padding: 10px 30px;
+}

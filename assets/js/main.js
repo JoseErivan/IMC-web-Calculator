@@ -1,63 +1,55 @@
 const divResultado = document.querySelector(".container-resultado");
 
 function calcular() {
-
     // Primeiro fazemos a requisição dos dados adicionados pelo usuário na página web.
     let peso = document.querySelector("#peso");
     let altura = document.querySelector("#altura");
     // Salvamos esses dados em variáveis.
     peso = Number(peso.value);
     altura = Number(altura.value);
-
-    // Validação dos dados com o uso de uma função. Esse bloco if só será executado se a minha função retornar true.
-    if (validaDados(peso, altura)) {
-        // Definindo as variáveis com o usu de funções.
-        let imc = calcImc(peso, altura);
-        let classe = classificacao(imc);
-        // Determinando o conteúdo e estilo da divResultado da página.
-        divResultado.innerHTML = `O seu IMC é de: ${imc.toFixed(2)} (${classe})`
-        divResultado.style.backgroundColor = "lightgreen"
-        divResultado.style.padding = "10px 30px"
-    }
+    // Validamos os dados de peso e altura da entrada do usuário.
+    validaDados(peso, altura);
 }
 
 // Lógica de validação dos dados passados pelo usuário.
 function validaDados(peso, altura) {
+    // Caso o peso inserido seja inválido entramos nesse if.
     if (!peso) {
-        // Determinando o conteúdo e estilo da divResultado da página.
-        divResultado.innerHTML = "Entre com um peso válido!"
-        divResultado.style.backgroundColor = "red"
-        divResultado.style.padding = "10px 30px"
-        return false;
-    } else if (!altura) {
-        // Determinando o conteúdo e estilo da divResultado da página.
-        divResultado.innerHTML = "Entre com uma altura válida!"
-        divResultado.style.backgroundColor = "red"
-        divResultado.style.padding = "10px 30px"
-        return false
+        setMessagem("Insira um peso válido!", "resultado-errado")
+        return;
     }
-    return true;
+    // Caso a altura inserida seja inválida entramos nesse if.
+    if (!altura) {
+        setMessagem("Insira uma altura válida!", "resultado-errado")
+        return;
+    }
+    // Caso os dados inseridos sejam validados com sucesso, temos a execução dos códigos abaixo.
+    const imc = calcImc(peso, altura);
+    return setMessagem(`O seu IMC é: ${imc.toFixed(2)} (${classificacao(imc)})`, "resultado-correto")
+}
+
+// A função setMensagem será responsável pela criação de um componente HTML 'p' para que a mensagem seja colocada dentro.
+// Essa função recebe a mensagem para o usuário e a classe para o meu componente que vai alerar ele visualmente.
+function setMessagem(msg, className) {
+    divResultado.innerHTML = "" // Resetando o conteúdo da div.
+    const paragrafo = document.createElement("p"); // Criando o elemento 'p'.
+    paragrafo.classList.add(className); // Definindo sua classe.
+    paragrafo.textContent = msg; // Definindo seu conteúdo.
+    divResultado.appendChild(paragrafo); // Adicionando o componente a div.
 }
 
 // Função para cálculo de IMC.
 function calcImc(peso, altura) {
-    return peso / (altura * altura)
+    return peso / altura ** 2;
 }
 
 // Função para classificar o resultado de acordo com o seu valor.
 function classificacao(imc) {
-    if (imc < 18.5) {
-        classe = "Abaixo do peso"
-    } else if (imc >= 18.5 && imc <= 24.9) {
-        classe = "Peso normal"
-    } else if (imc >= 25 && imc <= 29.9) {
-        classe = "Sobrepeso"
-    } else if (imc >= 30 && imc <= 34.9) {
-        classe = "Obesidade grau I"
-    } else if (imc >= 35 && imc <= 39.9) {
-        classe = "Obesidade grau II"
-    } else if (imc >= 40) {
-        classe = "Obesidade grau III"
-    }
-    return classe;
+    const classes = ["Abaixo do peso", "Peso normal", "Sobrepeso", "Obesidade grau I", "Obesidade grau II", "Obesidade grau III"]
+    if (imc >= 39.9) return classes[5];
+    if (imc >= 34.9) return classes[4];
+    if (imc >= 29.9) return classes[3];
+    if (imc >= 24.9) return classes[2];
+    if (imc >= 18.5) return classes[1];
+    if (imc < 18.5) return classes[0];
 }
